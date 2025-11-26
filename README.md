@@ -1,1 +1,1 @@
-# -Mini-e-commerce
+# Mini-e-commerce
