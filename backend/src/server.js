@@ -1,5 +1,5 @@
+const config = require('./config/env'); // Load env first
 const app = require('./app');
-const config = require('./config/env');
 
 const PORT = config.port || 3000;
 
