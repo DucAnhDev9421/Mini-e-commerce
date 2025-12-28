@@ -1,4 +1,37 @@
 module.exports = (err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
+    let error = { ...err };
+    error.message = err.message;
+    error.stack = err.stack;
+
+    console.error(err);
+
+    // Mongoose bad ObjectId
+    if (err.name === 'CastError') {
+        const message = `Resource not found with id of ${err.value}`;
+        error = { message, statusCode: 404 };
+    }
+
+    // Mongoose duplicate key
+    if (err.code === 11000) {
+        const message = 'Duplicate field value entered';
+        error = { message, statusCode: 400 };
+    }
+
+    // Mongoose validation error
+    if (err.name === 'ValidationError') {
+        const message = Object.values(err.errors).map(val => val.message).join(', ');
+        error = { message, statusCode: 400 };
+    }
+
+    // Joi Validation Error
+    if (err.isJoi) {
+        const message = err.details.map(d => d.message).join(', ');
+        error = { message, statusCode: 400 };
+    }
+
+    res.status(error.statusCode || 500).json({
+        success: false,
+        message: error.message || 'Server Error',
+        stack: process.env.NODE_ENV === 'development' ? error.stack : {}
+    });
 };
