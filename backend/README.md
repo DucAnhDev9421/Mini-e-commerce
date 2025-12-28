@@ -1,3 +1,3 @@
 # Mini E-commerce Backend
 
-Backend structure for the Mini E-commerce applicati
+Backend structure for the Mini E-commerce application.
